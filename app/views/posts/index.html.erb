@@ -1,0 +1,17 @@
+<h1 style="text-align:center;">Наші товари</h1>
+<hr>
+<br>
+<div class="posts-container">
+  <% @posts.each do |post| %>
+    <div class="post-card alert alert-light">
+      <h4 class="post-title"><%= post.title %></h4>
+      <div class="image-wrapper">
+        <% if post.image.attached? %>
+          <%= image_tag post.image, class: 'img-thumbnail', alt: 'Мініатюра' %>
+        <% end %>
+      </div>
+      <p class="post-price"><%= number_with_precision(post.price, precision: 2) %> ₴</p>
+      <%= link_to "Детальніше..", post_path(post), class: "btn btn-outline-primary post-details-button" %>
+    </div>
+  <% end %>
+</div>

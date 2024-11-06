@@ -1,0 +1,35 @@
+<h2>Додавання нового товару</h2>
+
+<%= form_for @post, url: posts_path, html: { multipart: true, data: { turbo: false } } do |f| %>
+    <% if @post.errors.any? %>
+        <% @post.errors.full_messages.each do |msg| %>
+            <div class="alert alert-danger"><%= msg %></div>
+        <% end %>
+    <% end %>
+    
+    <p>
+        Назва
+        <br>
+        <%= f.text_field(:title, class: 'form-control') %>
+    </p>
+    <p>
+        Ціна
+        <br>
+        <%= f.number_field :price, step: 0.01, class: 'form-control' %>
+    </p>
+    <p>
+        Опис
+        <br>
+        <%= f.text_area(:body, class: 'form-control') %>
+    </p>
+    
+    <p>
+        Фотографія
+        <br>
+        <%= f.file_field :image, class: 'form-control' %>
+    </p>
+    
+    <p>
+        <%= f.submit "Зберегти", class: 'btn btn-success' %>
+    </p>
+<% end %>

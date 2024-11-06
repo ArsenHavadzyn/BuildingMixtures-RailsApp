@@ -1,0 +1,55 @@
+<h2>Ваш кошик</h2>
+<% if @cart_items.any? %>
+  <% total_sum = 0 %>
+  <div class="row">
+    <% @cart_items.each do |item| %>
+      <% total_sum += item.post.price * item.quantity %>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><%= item.post.title %></h5>
+            <p class="card-text">Кількість: <%= item.quantity %> шт.</p>
+            <p class="card-text">Ціна: <%= number_with_precision(item.post.price * item.quantity, precision: 2) %> ₴</p>
+            <%= button_to "Видалити", remove_item_cart_path(item.id), method: :delete, class: "btn btn-danger" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <h3 style="text-align:center">Загальна сума: <%= number_with_precision(total_sum, precision: 2) %> ₴</h3>
+  
+  <h3>Оформлення замовлення</h3>
+  <%= form_with url: clear_cart_path, method: :post do %>
+    <div class="mb-3">
+      <label for="full_name" class="form-label">ПІБ</label>
+      <input type="text" class="form-control" id="full_name" name="full_name" required>
+    </div>
+    <div class="mb-3">
+      <label for="phone_number" class="form-label">Номер телефону</label>
+      <input type="tel" class="form-control" id="phone_number" name="phone_number" required>
+    </div>
+    <div class="mb-3">
+      <label for="address" class="form-label">Адреса доставки</label>
+      <input type="text" class="form-control" id="address" name="address" required>
+    </div>
+    <div class="mb-3">
+      <label for="comment" class="form-label">Коментар</label>
+      <textarea class="form-control" id="comment" name="comment"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="payment_type" class="form-label">Тип оплати</label>
+      <select class="form-select" id="payment_type" name="payment_type" required>
+        <option value="">Оберіть тип оплати</option>
+        <option value="credit_card">Кредитна картка</option>
+        <option value="paypal">PayPal</option>
+        <option value="cash_on_delivery">Готівкою при отриманні</option>
+      </select>
+    </div>
+    <div class="text-center">
+      <%= button_tag "Замовити", type: :submit, class: "btn btn-success"%>
+    </div>
+  <% end %>
+<% else %>
+  <p>Ваш кошик порожній.</p>
+<% end %>

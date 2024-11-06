@@ -1,0 +1,65 @@
+<h1 class="text-center"><%= @post.title %></h1>
+
+<br>
+<div class="row">
+  <% if @post.image.attached? %>
+    <div class="col-md-6 imgcol">
+      <%= image_tag @post.image, class: 'img-fluid', alt: 'Зображення публікації' %>
+    </div>
+  <% end %>
+  <div class="col-md-6">
+    <h3 style="text-align:center; padding-bottom:5px;">Опис товару:</h3>
+    <%= simple_format(@post.body) if @post.body.present? %>
+    <h4 class="h4-price">Ціна: <%= number_with_precision(@post.price, precision: 2) %> ₴</h4>
+    <hr>
+  </div>
+</div>
+<% if session[:admin] %>
+  <div class="button-group d-flex align-items-center justify-content-center">
+   <%= link_to "Редагувати", edit_post_path(@post), class: "btn btn-warning" %>
+   <%= button_to "Видалити", post_path(@post), method: :delete, data: {turbo_method: :delete, turbo_confirm: 'Ви впевнені?'}, class: "btn btn-danger" %>
+  </div>
+<% else %>
+  <div class="button-group d-flex align-items-center justify-content-center">
+  <%= button_to "Додати до кошика", add_item_cart_path(post_id: @post.id), method: :post, class: "btn btn-primary" %>
+  <%= button_to "Придбати", add_item_cart_path(post_id: @post.id), method: :post, params: { redirect_to_cart: true }, class: "btn btn-success" %>
+  </div>  
+<% end %>
+
+<hr>
+<h2>Усі коментарі</h2>
+<br>
+<% @post.comments.each do |comment| %>
+  <div class="alert alert-light comment-container">
+    <p><strong><%= comment.username %></strong>: <%= comment.body %></p>
+    <% if session[:admin] %>
+      <%= form_with model: [@post, comment], method: :delete, local: true do %>
+        <button type="submit" class="close-button" data-confirm="Ви впевнені, що хочете видалити цей коментар?">✖</button>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+
+
+
+<% if !session[:admin] %>
+<hr>
+<h2>Залишити відгук</h2>
+<%= form_for([@post, @post.comments.build]) do |f| %>
+    <p>
+        Користувач
+        <br>
+        <%= f.text_field(:username, class: 'form-control') %>
+    </p>
+    <p>
+        Текст коментаря
+        <br>
+        <%= f.text_area(:body, class: 'form-control') %>
+    </p>
+
+    <p>
+        <%= f.submit("Опублікувати", class: 'btn btn-warning') %>
+    </p>
+<% end %>
+<% end %>
